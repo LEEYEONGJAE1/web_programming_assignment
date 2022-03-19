@@ -27,7 +27,7 @@ int main(char argc, char** argv)
     return 0;
 }
 const char *my_inet_ntop(int af, const void *src, char *dst, socklen_t size){
-    
+    printf("src: %s\n",src);
 }
 int printAddr(struct sockaddr_in *myAddr)
 {
