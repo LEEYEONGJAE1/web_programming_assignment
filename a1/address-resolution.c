@@ -36,7 +36,6 @@ int printAddr(struct sockaddr_in *myAddr)
     port = ntohs(myAddr->sin_port);
     //inet_ntop(AF_INET,&(((struct sockaddr_in *)myAddr)->sin_addr),txt,sizeof(struct sockaddr_in));
     my_inet_ntop(AF_INET,&(((struct sockaddr_in *)myAddr)->sin_addr),txt,sizeof(struct sockaddr_in));
-    printf("AF_INET: %d, txt: %s, sockaddr_in: %d",AF_INET,txt,sizeof(struct sockaddr_in));
     printf("IP:%s, Port:%d \n",txt, myAddr->sin_port);
     return 0;
 }
