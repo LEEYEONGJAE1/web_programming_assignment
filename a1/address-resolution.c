@@ -29,7 +29,7 @@ int main(char argc, char** argv)
 const char *my_inet_ntop(int af, const void *src, char *dst, socklen_t size){
     static const char fmt[] = "%u.%u.%u.%u";
     char tmp[sizeof "255.255.255.255"];
-    SPRINTF((tmp, fmt, src[0], src[1], src[2], src[3]));
+    SPRINTF(tmp, fmt, src[0], src[1], src[2], src[3]);
     return strcpy(dst, tmp);
 }
 int printAddr(struct sockaddr_in *myAddr)
