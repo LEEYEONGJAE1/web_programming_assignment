@@ -1,4 +1,7 @@
+#include<stdio.h>
+#include<sys/socket.h>
 #define PORT 9001
+
 int main()
 {
     int clntSd;
