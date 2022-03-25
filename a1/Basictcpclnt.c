@@ -6,11 +6,11 @@
 int main()
 {
     int clntSd;
-    struct sockaddr_in clntAddr;
+    stru ct sockaddr_in clntAddr;
     int clntAddrLen, readLen;
     char wBuff[] = "How old are you?";
     char rBuff[BUFSIZ];
-    clntSd = socket(PF_INET, SOCK_STREAM, 0);
+    clntSd =socket(PF_INET, SOCK_STREAM, 0);
     if(clntSd == -1)
     {
         printf("Socket Creation Error");
@@ -25,9 +25,11 @@ int main()
         close(clntSd);
         return -1;
     }
-    send(clntSd, wBuff, sizeof(wBuff),0);
+    //write(clntSd, wBuff, sizeof(wBuff));
+    send(clntSd, wBuff, sizeof(wBuff),0);//flag를 0으로 설정
     printf("Client: %s\n",wBuff);
-    readLen = recv(clntSd, rBuff,sizeof(rBuff)-1,0);
+    //readLen = read(clntSd, rBuff,sizeof(rBuff)-1);
+    readLen = recv(clntSd, rBuff,sizeof(rBuff)-1,0);//flag를 0으로 설정
     if(readLen == -1)
     {
         printf("Read Error");

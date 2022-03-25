@@ -37,7 +37,8 @@ int main()
         printf("Accept Error");
         return -1;
     }
-    readLen = recv(clntSd, rBuff, sizeof(rBuff)-1,0);
+    //readLen = read(clntSd, rBuff, sizeof(rBuff)-1)
+    readLen = recv(clntSd, rBuff, sizeof(rBuff)-1,0);//flag를 0으로 설정
     if(readLen == -1)
     {
         printf("Read Error");
@@ -45,7 +46,8 @@ int main()
     }
     rBuff[readLen] = '\0';
     printf("Client: %s \n", rBuff);
-    send(clntSd, wBuff, sizeof(wBuff),0);
+    //write(clntSd, wBuff, sizeof(wBuff));
+    send(clntSd, wBuff, sizeof(wBuff),0);//flag를 0으로 설정
     close(clntSd);
     close(srvSd);
     return 0;
