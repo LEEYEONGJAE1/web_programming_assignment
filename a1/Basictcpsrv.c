@@ -33,7 +33,7 @@ int main()
         printf("Accept Error");
         return -1;
     }
-    readLen = read(clntSd, rBuff, sizeof(rBuff)-1);
+    readLen = recv(clntSd, rBuff, sizeof(rBuff)-1);
     if(readLen == -1)
     {
         printf("Read Error");
@@ -41,7 +41,7 @@ int main()
     }
     rBuff[readLen] = '\0';
     printf("Client: %s \n", rBuff);
-    write(clntSd, wBuff, sizeof(wBuff));
+    send(clntSd, wBuff, sizeof(wBuff));
     close(clntSd);
     close(srvSd);
     return 0;

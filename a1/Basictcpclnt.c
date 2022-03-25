@@ -21,9 +21,9 @@ int main()
         close(clntSd);
         return -1;
     }
-    write(clntSd, wBuff, sizeof(wBuff));
+    send(clntSd, wBuff, sizeof(wBuff));
     printf("Client: %s\n",wBuff);
-    readLen = read(clntSd, rBuff,sizeof(rBuff)-1);
+    readLen = recv(clntSd, rBuff,sizeof(rBuff)-1);
     if(readLen == -1)
     {
         printf("Read Error");

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -27,10 +28,10 @@ int main(char argc, char** argv)
     return 0;
 }
 const char *my_inet_ntop(int af, const u_char *src , char *dst, socklen_t size){
-    static const char fmt[] = "%u.%u.%u.%u";
+    static const char fmt[] = "%u.%u.%u.%u"; //format 지정(%u)
     char tmp[sizeof "255.255.255.255"];
-    sprintf(tmp, fmt, src[0], src[1], src[2], src[3]);
-    return strcpy(dst, tmp);
+    sprintf(tmp, fmt, src[0], src[1], src[2], src[3]); //tmp에 src를 format에 맞게 저장
+    return strcpy(dst, tmp); //dst에 tmp 복사
 }
 int printAddr(struct sockaddr_in *myAddr)
 {
@@ -38,7 +39,7 @@ int printAddr(struct sockaddr_in *myAddr)
     char txt[INET_ADDRSTRLEN];
     port = ntohs(myAddr->sin_port);
     //inet_ntop(AF_INET,&(((struct sockaddr_in *)myAddr)->sin_addr),txt,sizeof(struct sockaddr_in));
-    my_inet_ntop(AF_INET,&(((struct sockaddr_in *)myAddr)->sin_addr),txt,sizeof(struct sockaddr_in));
+    my_inet_ntop(AF_INET,&(((struct sockaddr_in *)myAddr)->sin_addr),txt,sizeof(struct sockaddr_in)); //inet_ntop과 동일하게 my_iniet_ntop 호출 
     printf("IP:%s, Port:%d \n",txt, myAddr->sin_port);
     return 0;
 }
