@@ -34,8 +34,8 @@ int main(int argc, char** argv)
 		err_proc();	
 	}
 
-    char *message="이름: 이영재\n학번: 20201752";
-    strcpy(wbuff,message);
+    char message[]="이름: 이영재\n학번: 20201752";
+    strcpy(wBuff,message);
     //fgets(wBuff,BUFSIZ-1,stdin);
     readLen = strlen(wBuff);
 

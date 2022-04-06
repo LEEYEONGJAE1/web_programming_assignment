@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	destAddr.sin_port = htons(atoi(argv[2]));
 	addrLen = sizeof(destAddr);
 
-	char *message="이름: 이영재\n학번: 20201752";
+	char message[]="이름: 이영재\n학번: 20201752";
     strcpy(buff,message);
     //fgets(buff, BUFSIZ-1, stdin);
     readLen = strlen(buff);

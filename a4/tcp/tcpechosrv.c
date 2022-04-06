@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 			readLen = read(clntSd, rBuff, sizeof(rBuff)-1);
 			if(readLen == 0) break;
 			rBuff[readLen] = '\0';
-			printf("Client(%d): %s\n",
+			printf("Client(%d): \n%s\n",
 				ntohs(clntAddr.sin_port),rBuff);
 			write(clntSd, rBuff, strlen(rBuff));
 		}
