@@ -34,11 +34,11 @@ int main(int argc, char** argv)
 		err_proc();	
 	}
 
-	char *message="이름: 이영재\n학번: 20201752";
-    strcpy(buff,message);
+    char *message="이름: 이영재\n학번: 20201752";
+    strcpy(wbuff,message);
     //fgets(wBuff,BUFSIZ-1,stdin);
     readLen = strlen(wBuff);
-    if(readLen < 2) continue;		
+
     write(clntSd,wBuff,readLen-1);
     recvByte = 0;
     maxBuff = BUFSIZ-1;
@@ -49,8 +49,9 @@ int main(int argc, char** argv)
     rBuff[recvByte] = '\0';
     printf("Server: %s\n", rBuff);
     wBuff[readLen-1]='\0';	
-	printf("end");
-	close(clntSd);
+
+    printf("END ^^\n");
+    close(clntSd);
 
 	return 0;
 }
