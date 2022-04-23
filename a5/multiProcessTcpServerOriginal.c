@@ -6,17 +6,9 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
-#include <signal.h>
+
 void errProc();
 void errPrint();
-void child_process_handler(int signo){
-	pid_t pid;
-	int status;
-	while((pid= waitpid(-1,&status,WNOHANG)) > 0 ){
-		printf("child process %d terminated\n", pid);
-	}
-	return;
-}
 int main(int argc, char** argv)
 {
 	int srvSd, clntSd;
@@ -24,7 +16,7 @@ int main(int argc, char** argv)
 	int clntAddrLen, readLen, strLen;
 	char rBuff[BUFSIZ];
 	pid_t pid;
-	signal(SIGCHLD,(void *) child_process_handler);
+
 	if(argc != 2) {
 		printf("Usage: %s [port] \n", argv[0]);
 		exit(1);
