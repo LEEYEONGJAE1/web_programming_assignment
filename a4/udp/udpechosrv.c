@@ -36,8 +36,7 @@ int main(int argc, char** argv)
 			(struct sockaddr *) &destAddr,
 			&addrLen);
 		if(nRecv == -1) errProc("recvfrom");
-		if(nRecv > 0) buff[nRecv-1]='\0';
-		else buff[nRecv] = '\0';
+		buff[nRecv] = '\0'; //줄바꿈 문자가 포함되어 있지 않기 때문
 		strAddr = inet_ntoa(destAddr.sin_addr);
 		printf("%s:%d>%s\n",strAddr,ntohs(destAddr.sin_port),buff);
 		nRecv = strlen(buff);	

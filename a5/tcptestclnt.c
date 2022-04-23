@@ -34,24 +34,25 @@ int main(int argc, char** argv)
 		err_proc();	
 	}
 
-    char message[]="이름: 이영재\n학번: 20201752";
-    strcpy(wBuff,message);
-    //fgets(wBuff,BUFSIZ-1,stdin);
-    readLen = strlen(wBuff);
-
-    write(clntSd,wBuff,readLen);
-    recvByte = 0;
-    maxBuff = BUFSIZ-1;
-    do{
-        recvByte += read(clntSd,rBuff,maxBuff);
-        maxBuff -= recvByte;
-    }while(recvByte < (readLen-1));
-    rBuff[recvByte] = '\0';
-    printf("Server: %s\n", rBuff);
-    wBuff[readLen-1]='\0';	
-
-    printf("END ^^\n");
-    close(clntSd);
+	while(1)
+	{
+		fgets(wBuff,BUFSIZ-1,stdin);
+		readLen = strlen(wBuff);
+		if(readLen < 2) continue;		
+		write(clntSd,wBuff,readLen-1);
+		recvByte = 0;
+		maxBuff = BUFSIZ-1;
+		do{
+			recvByte += read(clntSd,rBuff,maxBuff);
+			maxBuff -= recvByte;
+		}while(recvByte < (readLen-1));
+		rBuff[recvByte] = '\0';
+		printf("Server: %s\n", rBuff);
+		wBuff[readLen-1]='\0';	
+		if(!strcmp(wBuff,"END")) break;
+	}
+	printf("END ^^\n");
+	close(clntSd);
 
 	return 0;
 }
