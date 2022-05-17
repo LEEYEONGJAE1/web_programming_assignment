@@ -81,8 +81,8 @@ int main(int argc, char** argv)
 					}
 					rBuff[readLen] = '\0';
 					printf("Client(%d): %s\n",i-3,rBuff);
-                    for(int i=4;i<maxFd+1;i++)
-					    write(i,rBuff, strlen(rBuff));
+                    for(int j=4;j<maxFd+1;j++)
+					    write(j,rBuff, strlen(rBuff));
 				}
 			}
 		}
