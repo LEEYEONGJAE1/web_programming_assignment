@@ -66,6 +66,7 @@ int main(int argc, char** argv)
 					printf("A client is connected...\n");
                     printf("Client IP :%s\n", inet_ntoa(clntAddr.sin_addr));
                     clntSd[i]=connectSd;
+                    write(clntSd[i], "Welcome :)", sizeof("Welcome :)"));
 					FD_SET(connectSd, &defaultFds);
 					if(maxFd < connectSd){
 						maxFd = connectSd;							
