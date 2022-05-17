@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 {
 	int clntSd;
 	struct sockaddr_in clntAddr;
-	int clntAddrLen, readLen, recvByte, maxBuff;
+	int clntAddrLen, readLen, recvByte, maxBuff, res;
 	char wBuff[BUFSIZ];
 	char rBuff[BUFSIZ];
 
