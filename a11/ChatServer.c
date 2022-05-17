@@ -9,7 +9,7 @@
 #include <errno.h>
 #include <arpa/inet.h>
 
-
+#define MAX_USER 100
 int main(int argc, char** argv)
 {
 	int listenSd, connectSd;
@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 	int maxFd = 0;
 	fd_set defaultFds, rFds;
 	int res, i;
-
+    int clntSd[MAX_USER];
 	if(argc != 2)
 	{
 		printf("Usage: %s [Port Number]\n", argv[0]);
@@ -65,6 +65,7 @@ int main(int argc, char** argv)
 					}
 					printf("A client is connected...\n");
                     printf("Client IP :%s\n", inet_ntoa(clntAddr.sin_addr));
+                    clntSd[i]=connectSd;
 					FD_SET(connectSd, &defaultFds);
 					if(maxFd < connectSd){
 						maxFd = connectSd;							
@@ -82,7 +83,9 @@ int main(int argc, char** argv)
 					}
 					rBuff[readLen] = '\0';
 					printf("Client(%d): %s\n",i-3,rBuff);
-					write(i,rBuff, strlen(rBuff));
+                    for(int j=0;j<maxFd+1;j++){
+                        write(clntSd[j],rBuff,strlen(rBuff));
+                    }
 				}
 			}
 		}
