@@ -9,7 +9,7 @@
 #include <signal.h>
 void errProc();
 void errPrint();
-void child_process_handler(int signo){
+void child_process_handler(int signo){ //새로 추가한 부분
 	pid_t pid;
 	int status;
 	while((pid= waitpid(-1,&status,WNOHANG)) > 0 ){
@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	int clntAddrLen, readLen, strLen;
 	char rBuff[BUFSIZ];
 	pid_t pid;
-	signal(SIGCHLD,(void *) child_process_handler);
+	signal(SIGCHLD,(void *) child_process_handler); // SIGCHLD 핸들러 추가
 	if(argc != 2) {
 		printf("Usage: %s [port] \n", argv[0]);
 		exit(1);
