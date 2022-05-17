@@ -48,7 +48,6 @@ int main(int argc, char** argv)
 	while(1)
 	{
 		rFds = defaultFds;
-		printf("Monitoring ... \n");
 		if((res = select(maxFd + 1, &rFds, 0, 0, NULL)) == -1) break;
 		for(i=0; i<maxFd+1; i++)
 		{
@@ -64,7 +63,7 @@ int main(int argc, char** argv)
 						printf("Accept Error");
 						continue;
 					}
-					printf("A clientis connected...\n");
+					printf("A client is connected...\n");
 					FD_SET(connectSd, &defaultFds);
 					if(maxFd < connectSd){
 						maxFd = connectSd;							
@@ -82,7 +81,8 @@ int main(int argc, char** argv)
 					}
 					rBuff[readLen] = '\0';
 					printf("Client(%d): %s\n",i-3,rBuff);
-					write(i,rBuff, strlen(rBuff));						
+                    printf("%d\n",maxFd);
+					write(i,rBuff, strlen(rBuff));
 				}
 			}
 		}
