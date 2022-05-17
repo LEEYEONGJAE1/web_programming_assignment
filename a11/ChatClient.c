@@ -15,8 +15,7 @@ int main(int argc, char** argv)
 	char wBuff[BUFSIZ];
 	char rBuff[BUFSIZ];
 	if(argc != 3) {
-		printf("Usage: %s [IP Address] [Port]\n", argv[0]);
-	
+		printf("Usage: %s [IP Address] [toPort]\n", argv[0]);
 	}
 	clntSd = socket(AF_INET, SOCK_STREAM, 0);
 	if(clntSd == -1) err_proc();

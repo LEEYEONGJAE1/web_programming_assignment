@@ -67,7 +67,8 @@ int main(int argc, char** argv)
 					printf("A client is connected...\n");
 					FD_SET(connectSd, &defaultFds);
 					if(maxFd < connectSd){
-						maxFd = connectSd;							}
+						maxFd = connectSd;							
+                    }
 				}
 				else // IO
 				{
@@ -81,7 +82,9 @@ int main(int argc, char** argv)
 					}
 					rBuff[readLen] = '\0';
 					printf("Client(%d): %s\n",i-3,rBuff);
-					write(i,rBuff, strlen(rBuff));						
+                    for(int j=0;j<maxFd+1;j++){
+					    write(j,rBuff, strlen(rBuff));
+                    }						
 				}
 			}
 		}
