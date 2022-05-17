@@ -6,25 +6,19 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include <sys/epoll.h>
 #include <errno.h>
-#include <fcntl.h>
+#include <arpa/inet.h>
 
-#define MAX_EVENTS	10
-void errProc(const char *);
-int makeNbSocket(int);
 
 int main(int argc, char** argv)
 {
 	int listenSd, connectSd;
 	struct sockaddr_in srvAddr, clntAddr;
-	int clntAddrLen, readLen;
+	int clntAddrLen, readLen, strLen;
 	char rBuff[BUFSIZ];
-	int i, completed = 0;
-
-	int epfd, ready, readfd;
-	struct epoll_event ev;
-	struct epoll_event events[MAX_EVENTS];
+	int maxFd = 0;
+	fd_set defaultFds, rFds;
+	int res, i;
 
 	if(argc != 2)
 	{
@@ -33,125 +27,66 @@ int main(int argc, char** argv)
 	}
 
 	printf("Server start...\n");
+	listenSd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if(listenSd == -1 ) printf("socket error");
 
-	epfd = epoll_create(1);
-	if(epfd == -1) errProc("epoll_create");
-		
-
-	listenSd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if(listenSd == -1 ) errProc("socket");	
-	
 	memset(&srvAddr, 0, sizeof(srvAddr));
 	srvAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	srvAddr.sin_family = AF_INET;
 	srvAddr.sin_port = htons(atoi(argv[1]));
-	if(bind(listenSd, (struct sockaddr *) &srvAddr, sizeof(srvAddr)) == -1)
-		errProc("bind");
-	makeNbSocket(listenSd);
-	if(listen(listenSd, 5) < 0) errProc("listen");
-	
-	ev.events = EPOLLIN | EPOLLET;
-	ev.data.fd = listenSd;
-	if(epoll_ctl(epfd, EPOLL_CTL_ADD, listenSd, &ev) == -1)
-		errProc("epoll_ctl");
+
+	if(bind(listenSd, (struct sockaddr *) &srvAddr,
+				 sizeof(srvAddr)) == -1)
+		printf("bind error\n");
+	if(listen(listenSd, 5) < 0) printf("listen error\n");
+
+	FD_ZERO(&defaultFds);
+	FD_SET(listenSd, &defaultFds);
+	maxFd = listenSd;
 
 	clntAddrLen = sizeof(clntAddr);
 	while(1)
 	{
+		rFds = defaultFds;
 		printf("Monitoring ... \n");
-		ready = epoll_wait(epfd, events, MAX_EVENTS, -1);
-		if(ready == -1) 
+		if((res = select(maxFd + 1, &rFds, 0, 0, NULL)) == -1) break;
+		for(i=0; i<maxFd+1; i++)
 		{
-			if(errno == EINTR)	continue;
-			else errProc("epoll_wait");
-		}
-		
-		for(i=0; i<ready; i++)
-		{
-			if(events[i].data.fd == listenSd) // accept a client 
+			if(FD_ISSET(i, &rFds))
 			{
-				while(1)
+				if(i == listenSd) //accept a client
 				{
-					connectSd = accept(listenSd, (struct sockaddr *) &clntAddr, &clntAddrLen);
+					connectSd = accept(listenSd,
+						 (struct sockaddr *) &clntAddr,
+						 &clntAddrLen);
 					if(connectSd == -1)
 					{
-						if((errno == EAGAIN) || (errno == EWOULDBLOCK))
-							break;
-						else {
-							fprintf(stderr,"Accept Error");
-							continue;
-						}
+						printf("Accept Error");
+						continue;
 					}
-					fprintf(stderr,"A client is connected...\n");
-					
-					makeNbSocket(connectSd);					
-					ev.data.fd = connectSd;
-					ev.events = EPOLLIN | EPOLLET;
-					if(epoll_ctl(epfd, EPOLL_CTL_ADD, connectSd, &ev) == -1)
-						errProc("epoll_ctl");					
-					
+					printf("A client is connected...\n");
+					FD_SET(connectSd, &defaultFds);
+					if(maxFd < connectSd){
+						maxFd = connectSd;							}
 				}
-				//fprintf(stderr,"There is no client in the queue...\n");
-				continue;
-			}
-			else //IO
-			{
-				completed = 0;
-				while(1)
+				else // IO
 				{
-					readfd = events[i].data.fd;
-					readLen = read(readfd, rBuff, sizeof(rBuff));
-					if(readLen == -1)
-					{
-						if(errno != EAGAIN) 
-						{
-							fprintf(stderr,"Read Error \n");
-							completed = 1;
-						}
-						printf("data unavailable\n");
-						break;
-
-					}
-					if(readLen == 0) 
+					readLen = read(i, rBuff, sizeof(rBuff)-1);
+					if(readLen <= 0) 
 					{
 						printf("A client is disconnected...\n");
-						if(epoll_ctl(epfd, EPOLL_CTL_DEL, readfd, &ev) == -1)
-							errProc("epoll_ctl");
-						close(events[i].data.fd);
-						
+						FD_CLR(i, &defaultFds);
+						close(i);
+						continue;
 					}
-					write(1, rBuff, readLen);	
-					printf("\n");
-
-					
-					//break;
+					rBuff[readLen] = '\0';
+					printf("Client(%d): %s\n",i-3,rBuff);
+					write(i,rBuff, strlen(rBuff));						
 				}
-
-				
 			}
-		}	
+		}
 	}
 	close(listenSd);
-	close(epfd);
 	return 0;
 }
 
-void errProc(const char* str)
-{
-	fprintf(stderr,"%s: %s", str, strerror(errno));
-	exit(errno);
-}
-
-int makeNbSocket(int socket)
-{	
-  int res;
-
-  res = fcntl(socket, F_GETFL, 0);
-  if (res == -1) errProc("fcntl");
-  res |= O_NONBLOCK;
-  res = fcntl(socket, F_SETFL, res);
-  if (res == -1) errProc("fcntl");
-  
-  return 0;
-
-}
