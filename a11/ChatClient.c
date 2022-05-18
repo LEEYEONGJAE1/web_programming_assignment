@@ -58,7 +58,7 @@ int main(int argc, char** argv)
       cBuf[iRtn - 1] = 0;
       write(iFd, cBuf, BUFSIZ-1);    
     }
-    if(0 == (FD_ISSET(iFd, &fdRead) ))
+    if(FD_ISSET(iFd, &fdRead))
     {
       memset(cBuf, 0, BUFSIZ-1);
       iRtn = read(iFd, cBuf, BUFSIZ-1);      
