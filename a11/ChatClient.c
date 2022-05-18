@@ -49,16 +49,15 @@ int main(int argc, char** argv)
     //rfds초기화
     if((res = select(serverSd+1, &rFds, 0, 0, NULL)) == -1) break;
 
-    if(FD_ISSET(0, &rFds))
+    if(FD_ISSET(0, &rFds)) //채팅 입력 시
     {
       len = read(0, rBuff, BUFSIZ-1);      
       rBuff[len - 1] = 0;
       write(serverSd, rBuff, BUFSIZ-1); 
       memset(rBuff,0,sizeof(rBuff));   
     }
-    if(FD_ISSET(serverSd, &rFds))
+    if(FD_ISSET(serverSd, &rFds)) //서버로부터 input 시
     {
-      
       len = read(serverSd, rBuff, BUFSIZ-1);      
       printf("%s\n", rBuff);    
       memset(rBuff,0,sizeof(rBuff));
