@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 					readLen = read(i, rBuff, sizeof(rBuff)-1);
 					if(readLen <= 0) 
 					{
-						printf("Client (%s) 님이 나갔습니다.\n",userInfo[i]);
+						printf("Client (%s) 님이 나갔습니다.\n",userInfo[i-4]);
 						FD_CLR(i, &defaultFds);
 						close(i);
 						continue;
@@ -89,7 +89,7 @@ int main(int argc, char** argv)
 					rBuff[readLen] = '\0';
 					char wBuff[BUFSIZ];
 					sprintf(wBuff,"Client %s: %s",userInfo[i-4],rBuff);
-					printf("%s",wBuff);
+					printf("%s\n",wBuff);
 					for(int j=0;j<usercnt;j++){
 						if(i-4==j)
 							continue;
