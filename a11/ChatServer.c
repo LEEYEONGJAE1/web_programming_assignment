@@ -63,9 +63,7 @@ int main(int argc, char** argv)
 						printf("Accept Error");
 						continue;
 					}
-					printf("A client is connected...\n");
-                    printf("Client IP :%s\n", inet_ntoa(clntAddr.sin_addr));
-  					printf("Client Port : %d\n", ntohs(clntAddr.sin_port)); 
+                    printf("Client (%s:%d) 님이 들어왔습니다.\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
 
                     clntSd[i]=connectSd;
 					clntInfo[i]=clntAddr;
@@ -80,13 +78,13 @@ int main(int argc, char** argv)
 					readLen = read(i, rBuff, sizeof(rBuff)-1);
 					if(readLen <= 0) 
 					{
-						printf("A client is disconnected...\n");
+						printf("Client (%s:%d) 님이 나갔습니다.\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
 						FD_CLR(i, &defaultFds);
 						close(i);
 						continue;
 					}
 					rBuff[readLen] = '\0';
-					printf("Client(%s:%d): %s\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port),rBuff);
+					printf("%s:%d: %s\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port),rBuff);
 				}
 			}
 		}
