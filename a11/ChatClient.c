@@ -42,11 +42,11 @@ int main(int argc, char** argv)
   FD_ZERO(&defaultFds);
 	FD_SET(0, &defaultFds);
   FD_SET(serverSd,&defaultFds);
-
+  //default 설정
   while(1)
   {
     rFds=defaultFds;     
-    
+    //rfds초기화
     if((res = select(serverSd+1, &rFds, 0, 0, NULL)) == -1) break;
 
     if(FD_ISSET(0, &rFds))

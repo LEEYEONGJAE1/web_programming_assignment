@@ -77,8 +77,7 @@ int main(int argc, char** argv)
 					char wBuff[BUFSIZ];
 						
 					sprintf(wBuff, "Client (%s) 님이 들어왔습니다.\n",clientInfo[usercnt-1]); // wBuff에 입장한 클라이언트 정보 저장
-					printf("Client (%s) 님이 들어왔습니다.\n",clientInfo[usercnt-1]); //입장할 시 메시지
-
+					printf("%s\n",wBuff); //입장 메시지
 					for(int j=0;j<usercnt-1;j++){// 현재 입장한 client 제외
 						write(clntSd[j],wBuff,strlen(wBuff)); 
 					}
@@ -97,9 +96,7 @@ int main(int argc, char** argv)
 						char wBuff[BUFSIZ];
 						
 						sprintf(wBuff, "Client (%s) 님이 나갔습니다.\n",clientInfo[clientNum]); // wBuff에 퇴장한 클라이언트 정보 저장
-						printf("%s\n",wBuff);
-						printf("Client (%s) 님이 나갔습니다.\n",clientInfo[clientNum]); //퇴장할 시 메시지
-
+						printf("%s\n",wBuff); //퇴장 메시지
 						for(int j=0;j<usercnt;j++){
 							if(j==clientNum)// 퇴장한 client
 								continue;
