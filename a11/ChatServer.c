@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	fd_set defaultFds, rFds;
 	int res, i;
 
-    int clntSd[MAX_USER],usercnt=0; //클라이언트 정보 저장
+    int clntSd[MAX_USER],isIn[MAX_USER],usercnt=0; //클라이언트 정보 저장
 	char clientInfo[MAX_USER][30]; //클라이언트 식별자 (IP:port)
 	if(argc != 2)
 	{
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 					for(int j=0;j<usercnt-1;j++){// 현재 입장한 client 제외
 						write(clntSd[j],wBuff,strlen(wBuff)); 
 					}
-
+					isIn[usercnt-1]=1;
 					FD_SET(connectSd, &defaultFds);
 					if(maxFd < connectSd){
 						maxFd = connectSd;							
@@ -103,6 +103,7 @@ int main(int argc, char** argv)
 							write(clntSd[j],wBuff,strlen(wBuff)); // 그 외 client
 						}
 						FD_CLR(i, &defaultFds);
+						isIn[clientNum]=0;
 						close(i);
 						continue;
 					}
@@ -113,7 +114,7 @@ int main(int argc, char** argv)
 					printf("%s\n",wBuff);
 
 					for(int j=0;j<usercnt;j++){
-						if(j==clientNum)// 현재 채팅 친 client
+						if(j==clientNum||isIn[j]==0)// 현재 채팅 친 client
 							continue;
 						write(clntSd[j],wBuff,strlen(wBuff)); // 그 외 client에게 정보 전송
 					}
