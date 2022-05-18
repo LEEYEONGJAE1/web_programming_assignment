@@ -12,68 +12,57 @@
 void err_proc();
 int main(int argc, char** argv)
 {
-  int iFd;
-  struct sockaddr_in stAddr;
-  int iLen;
-  int iRtn;
-  char cBuf[BUFSIZ];  
-  fd_set fdRead;
+  int serverSd;
+  struct sockaddr_in serverAddr;
+  char rBuff[BUFSIZ];  
+  fd_set defaultFds, rFds;
+  int res, len;
 
+  //소켓
+  serverSd = socket(AF_INET, SOCK_STREAM, 0);
+  if(serverSd==-1) err_proc();
+  if(argc != 3) {
+		printf("Usage: %s [IP Address] [Port]\n", argv[0]);
+	
+	}
+  
+  //address 설정
+  memset(&serverAddr,0,sizeof(serverAddr));
+  serverAddr.sin_family = AF_INET;
+  serverAddr.sin_addr.s_addr = inet_addr(argv[1]);
+  serverAddr.sin_port = htons(atoi(argv[2]));
 
-  /*** socket ***/
-  iFd = socket(AF_INET, SOCK_STREAM, 0);
-  if(-1 == iFd)
+  //connect
+  if(connect(iFd, (struct sockaddr *)&serverAddr, sizeof(serverAddr))==-1)
   {
-    perror("socket:");
-    return 100;
+    close(serverSd);
+    err_proc();
   }
 
-  /*** structure setting ***/
-  stAddr.sin_family = AF_INET;
-  stAddr.sin_addr.s_addr = inet_addr(argv[1]);
-  stAddr.sin_port = htons(atoi(argv[2]));
-
-  iLen = sizeof(struct sockaddr_in);
-
-  /*** connect ***/
-  iRtn = connect(iFd, (struct sockaddr *)&stAddr, iLen);
-  if(-1 == iRtn)
-  {
-    perror("connect:");
-    close(iFd);
-    return 200;
-  }
+  FD_ZERO(&defaultFds);
+	FD_SET(0, &defaultFds);
+  FD_SET(serverSd,&defaultFds);
 
   while(1)
   {
-    FD_ZERO(&fdRead);  
-    FD_SET(0, &fdRead);
-    FD_SET(iFd, &fdRead);      
+    rFds=defaultFds;     
     select(iFd+1,&fdRead, 0, 0, 0);
+    
+    if((res = select(serverSd+1, &rFds, 0, 0, NULL)) == -1) break;
 
-    if(FD_ISSET(0, &fdRead) )
+    if(FD_ISSET(0, &fdRead))
     {
-      memset(cBuf, 0, BUFSIZ-1);
-      iRtn = read(0, cBuf, BUFSIZ-1);      
-      cBuf[iRtn - 1] = 0;
-      write(iFd, cBuf, BUFSIZ-1);    
+      len = read(0, rBuff, BUFSIZ-1);      
+      rBuff[len - 1] = 0;
+      write(serverSd, rBuff, BUFSIZ-1);    
     }
     if(FD_ISSET(iFd, &fdRead))
     {
-      memset(cBuf, 0, BUFSIZ-1);
-      iRtn = read(iFd, cBuf, BUFSIZ-1);      
-      printf("%s\n", cBuf);    
+      len = read(serverSd, rBuff, BUFSIZ-1);      
+      printf("%s\n", rBuff);    
     }
   }
-
-  
-
-  /*** read & write ***/
-  //memset(cBuf, 0, BUF_SIZE);
-  //iRtn = read(0, cBuf, BUF_SIZE);
-  
-
-  close(iFd);
+  close(serverSd);
   return 0;
 }
 
