@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 						continue;
 					}
 					rBuff[readLen] = '\0';
-					printf("%s : %s\n",userInfo[i],rBuff);
+					printf("%d %s : %s\n",i,userInfo[i],rBuff);
 					sprintf(rBuff,"%s",rBuff);
 					printf("현재 유저들:\n");
 					for(int j=0;j<usercnt;j++){
