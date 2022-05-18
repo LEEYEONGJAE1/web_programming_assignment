@@ -67,7 +67,8 @@ int main(int argc, char** argv)
 
                     clntSd[i]=connectSd;
 					clntInfo[i]=clntAddr;
-                    write(clntSd[i], "Welcome :)", sizeof("Welcome :)"));
+					printf("connectSd: %d",connectSd);
+                    write(connectSd, "Welcome :)", sizeof("Welcome :)"));
 					FD_SET(connectSd, &defaultFds);
 					if(maxFd < connectSd){
 						maxFd = connectSd;							
