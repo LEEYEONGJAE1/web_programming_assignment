@@ -13,7 +13,7 @@
 int main(int argc, char** argv)
 {
 	int listenSd, connectSd;
-	struct sockaddr_in srvAddr, clntAddr,clntInfo[Max_USER];;
+	struct sockaddr_in srvAddr, clntAddr,clntInfo[MAX_USER];;
 	int clntAddrLen, readLen, strLen;
 	char rBuff[BUFSIZ];
 	int maxFd = 0;
