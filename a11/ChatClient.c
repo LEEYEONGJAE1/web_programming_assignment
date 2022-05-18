@@ -54,9 +54,9 @@ int main(int argc, char** argv)
     {
       len = read(0, rBuff, BUFSIZ-1);      
       rBuff[len - 1] = 0;
-      write(serverSd, cBuf, BUFSIZ-1);    
+      write(serverSd, rBuff, BUFSIZ-1);    
     }
-    if(FD_ISSET(iFd, &rFds))
+    if(FD_ISSET(serverSd, &rFds))
     {
       len = read(serverSd, rBuff, BUFSIZ-1);      
       printf("%s\n", rBuff);    
