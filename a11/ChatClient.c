@@ -16,7 +16,7 @@ int main(int argc, char** argv)
   struct sockaddr_in stAddr;
   int iLen;
   int iRtn;
-  char cBuf[BUF_SIZE];  
+  char cBuf[BUFSIZ];  
   fd_set fdRead;
 
 
@@ -53,22 +53,18 @@ int main(int argc, char** argv)
 
     if(0 == (FD_ISSET(0, &fdRead) ) )
     {
-      memset(cBuf, 0, MSG_SIZE);
-      iRtn = read(0, cBuf, MSG_SIZE);      
+      memset(cBuf, 0, BUFSIZ-1);
+      iRtn = read(0, cBuf, BUFSIZ-1);      
       cBuf[iRtn - 1] = 0;
-      write(iFd, cBuf, MSG_SIZE);
+      write(iFd, cBuf, BUFSIZ-1);
       printf("[Send MSG]: [%s]\n", cBuf);    
     }
     if(0 == (FD_ISSET(iFd, &fdRead) ))
     {
-      memset(cBuf, 0, MSG_SIZE);
-      iRtn = read(iFd, cBuf, MSG_SIZE);      
+      memset(cBuf, 0, BUFSIZ-1);
+      iRtn = read(iFd, cBuf, BUFSIZ-1);      
       printf("[Server]: [%s]\n", cBuf);    
     }
-    if(0 == strncmp(cBuf, MSG_END, strlen(MSG_END)))
-    {
-      break;
-    }    
   }
 
   
