@@ -66,7 +66,6 @@ int main(int argc, char** argv)
 						printf("Accept Error");
 						continue;
 					}
-                    printf("Client (%s:%d) 님이 들어왔습니다.\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
 					//
                     clntSd[usercnt]=connectSd;
 					sprintf(clientInfo[usercnt],"%s:%d",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
@@ -78,7 +77,6 @@ int main(int argc, char** argv)
 					char wBuff[BUFSIZ];
 						
 					sprintf(wBuff, "Client (%s) 님이 들어왔습니다.\n",clientInfo[usercnt-1]); // wBuff에 입장한 클라이언트 정보 저장
-					printf("%s\n",wBuff);
 					printf("Client (%s) 님이 들어왔습니다.\n",clientInfo[usercnt-1]); //입장할 시 메시지
 
 					for(int j=0;j<usercnt-1;j++){// 현재 입장한 client 제외
