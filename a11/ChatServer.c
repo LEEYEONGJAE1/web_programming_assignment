@@ -64,7 +64,9 @@ int main(int argc, char** argv)
 						continue;
 					}
 					printf("A client is connected...\n");
-                    printf("Client IP :%s\n", inet_ntoa(clntAddr.sin_addr));
+                    printf("Client IP :%s\n", inet_ntoa(stAddr.sin_addr));
+  					printf("Client Port : %d\n", ntohs(stAddr.sin_port)); 
+
                     clntSd[i]=connectSd;
                     write(clntSd[i], "Welcome :)", sizeof("Welcome :)"));
 					FD_SET(connectSd, &defaultFds);
@@ -84,9 +86,6 @@ int main(int argc, char** argv)
 					}
 					rBuff[readLen] = '\0';
 					printf("Client(%d): %s\n",i-3,rBuff);
-                    for(int j=0;j<maxFd+1;j++){
-                        write(clntSd[j],rBuff,strlen(rBuff));
-                    }
 				}
 			}
 		}
