@@ -33,7 +33,7 @@ int main(int argc, char** argv)
   serverAddr.sin_port = htons(atoi(argv[2]));
 
   //connect
-  if(connect(iFd, (struct sockaddr *)&serverAddr, sizeof(serverAddr))==-1)
+  if(connect(serverSd, (struct sockaddr *)&serverAddr, sizeof(serverAddr))==-1)
   {
     close(serverSd);
     err_proc();
@@ -46,17 +46,17 @@ int main(int argc, char** argv)
   while(1)
   {
     rFds=defaultFds;     
-    select(iFd+1,&fdRead, 0, 0, 0);
+    select(serverSd+1,&rFds, 0, 0, 0);
     
     if((res = select(serverSd+1, &rFds, 0, 0, NULL)) == -1) break;
 
-    if(FD_ISSET(0, &fdRead))
+    if(FD_ISSET(0, &rFds))
     {
       len = read(0, rBuff, BUFSIZ-1);      
       rBuff[len - 1] = 0;
-      write(serverSd, rBuff, BUFSIZ-1);    
+      write(serverSd, cBuf, BUFSIZ-1);    
     }
-    if(FD_ISSET(iFd, &fdRead))
+    if(FD_ISSET(iFd, &rFds))
     {
       len = read(serverSd, rBuff, BUFSIZ-1);      
       printf("%s\n", rBuff);    
