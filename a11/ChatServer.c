@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 						continue;
 					}
 					rBuff[readLen] = '\0';
-					printf("%d : %s\n",i,rBuff);
+					printf("%s : %s\n",userInfo[i],rBuff);
 					sprintf(rBuff,"%s",rBuff);
 					for(int j=0;j<usercnt;j++){
 						write(clntSd[j],rBuff,strlen(rBuff));
