@@ -56,8 +56,7 @@ int main(int argc, char** argv)
       memset(cBuf, 0, BUFSIZ-1);
       iRtn = read(0, cBuf, BUFSIZ-1);      
       cBuf[iRtn - 1] = 0;
-      write(iFd, cBuf, BUFSIZ-1);
-      printf("[Send MSG]: [%s]\n", cBuf);    
+      write(iFd, cBuf, BUFSIZ-1);    
     }
     if(0 == (FD_ISSET(iFd, &fdRead) ))
     {

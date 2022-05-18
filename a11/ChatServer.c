@@ -78,13 +78,14 @@ int main(int argc, char** argv)
 					readLen = read(i, rBuff, sizeof(rBuff)-1);
 					if(readLen <= 0) 
 					{
-						printf("Client (%s:%d) 님이 나갔습니다.\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
+						printf("Client (%s:%d) 님이 나갔습니다.\n",inet_ntoa(clntInfo[i].sin_addr),ntohs(clntInfo[i].sin_port));
 						FD_CLR(i, &defaultFds);
 						close(i);
 						continue;
 					}
 					rBuff[readLen] = '\0';
-					printf("%s:%d: %s\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port),rBuff);
+					printf("Client (%s:%d): %s\n",inet_ntoa(clntInfo[i].sin_addr),ntohs(clntInfo[i].sin_port),rBuff);
+					write(clntSd, rBuff, BUFSIZ-1);
 				}
 			}
 		}
