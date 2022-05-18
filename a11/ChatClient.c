@@ -53,12 +53,15 @@ int main(int argc, char** argv)
     {
       len = read(0, rBuff, BUFSIZ-1);      
       rBuff[len - 1] = 0;
-      write(serverSd, rBuff, BUFSIZ-1);    
+      write(serverSd, rBuff, BUFSIZ-1); 
+      memset(rBuff,0,sizeof(rBuff));   
     }
     if(FD_ISSET(serverSd, &rFds))
     {
+      
       len = read(serverSd, rBuff, BUFSIZ-1);      
       printf("%s\n", rBuff);    
+      memset(rBuff,0,sizeof(rBuff));
     }
   }
   close(serverSd);
