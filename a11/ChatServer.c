@@ -87,9 +87,9 @@ int main(int argc, char** argv)
 						continue;
 					}
 					rBuff[readLen] = '\0';
-					printf("%d %s : %s\n",i,userInfo[i-4],rBuff);
 					char wBuff[BUFSIZ];
 					sprintf(wBuff,"Client %s: %s",userInfo[i-4],rBuff);
+					printf("%s",wBuff);
 					for(int j=0;j<usercnt;j++){
 						if(i-4==j)
 							continue;
