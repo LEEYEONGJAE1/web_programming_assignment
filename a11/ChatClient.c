@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     FD_SET(iFd, &fdRead);      
     select(iFd+1,&fdRead, 0, 0, 0);
 
-    if(0 == (FD_ISSET(0, &fdRead) ) )
+    if(FD_ISSET(0, &fdRead) )
     {
       memset(cBuf, 0, BUFSIZ-1);
       iRtn = read(0, cBuf, BUFSIZ-1);      
