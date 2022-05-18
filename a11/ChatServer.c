@@ -91,7 +91,6 @@ int main(int argc, char** argv)
 					sprintf(rBuff,"%s",rBuff);
 					for(int j=0;j<usercnt;j++){
 						write(clntSd[j],rBuff,strlen(rBuff));
-						printf("%s",userInfo[j]);
 					}
 				}
 			}
