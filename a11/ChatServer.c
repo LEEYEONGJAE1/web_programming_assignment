@@ -64,8 +64,8 @@ int main(int argc, char** argv)
 						continue;
 					}
 					printf("A client is connected...\n");
-                    printf("Client IP :%s\n", inet_ntoa(stAddr.sin_addr));
-  					printf("Client Port : %d\n", ntohs(stAddr.sin_port)); 
+                    printf("Client IP :%s\n", inet_ntoa(clntAddr.sin_addr));
+  					printf("Client Port : %d\n", ntohs(clntAddr.sin_port)); 
 
                     clntSd[i]=connectSd;
                     write(clntSd[i], "Welcome :)", sizeof("Welcome :)"));
