@@ -9,18 +9,19 @@
 #include <errno.h>
 #include <arpa/inet.h>
 
-#define MAX_USER 100
+#define MAX_USER 100 //최대 유저 수 
 int main(int argc, char** argv)
 {
 	int listenSd, connectSd;
 	struct sockaddr_in srvAddr, clntAddr;
-	int clntAddrLen, readLen, strLen;
+	int clntAddrLen, readLen;
 	char rBuff[BUFSIZ];
 	int maxFd = 0;
 	fd_set defaultFds, rFds;
 	int res, i;
-    int clntSd[MAX_USER],usercnt=0;
-	char userInfo[MAX_USER][30];
+
+    int clntSd[MAX_USER],usercnt=0; //클라이언트 정보 저장
+	char clientInfo[MAX_USER][30]; //클라이언트 식별자 (IP:port)
 	if(argc != 2)
 	{
 		printf("Usage: %s [Port Number]\n", argv[0]);
@@ -66,11 +67,24 @@ int main(int argc, char** argv)
 						continue;
 					}
                     printf("Client (%s:%d) 님이 들어왔습니다.\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
-
+					//
                     clntSd[usercnt]=connectSd;
 					sprintf(userInfo[usercnt],"%s:%d",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
 					usercnt++;
+					//connect한 client 정보 저장
                     write(connectSd, "Hello!", sizeof("Hello!"));
+					//들어왔을 때 인사
+					
+					char wBuff[BUFSIZ];
+						
+					sprintf(wBuff, "Client (%s) 님이 들어왔습니다.\n",userInfo[clientNum]); // wBuff에 입장한 클라이언트 정보 저장
+					printf("%s\n",wBuff);
+					printf("Client (%s) 님이 들어왔습니다.\n",userInfo[clientNum]); //입장할 시 메시지
+
+					for(int j=0;j<usercnt-1;j++){// 현재 입장한 client 제외
+						write(clntSd[j],wBuff,strlen(wBuff)); 
+					}
+
 					FD_SET(connectSd, &defaultFds);
 					if(maxFd < connectSd){
 						maxFd = connectSd;							
@@ -78,22 +92,36 @@ int main(int argc, char** argv)
 				}
 				else // IO
 				{
+					int clientNum=i-4;// 현재 클라이언트 번호 (0-indexed)
 					readLen = read(i, rBuff, sizeof(rBuff)-1);
 					if(readLen <= 0) 
 					{
-						printf("Client (%s) 님이 나갔습니다.\n",userInfo[i-4]);
+						char wBuff[BUFSIZ];
+						
+						sprintf(wBuff, "Client (%s) 님이 나갔습니다.\n",userInfo[clientNum]); // wBuff에 퇴장한 클라이언트 정보 저장
+						printf("%s\n",wBuff);
+						printf("Client (%s) 님이 나갔습니다.\n",userInfo[clientNum]); //퇴장할 시 메시지
+
+						for(int j=0;j<usercnt;j++){
+							if(j==clientNum)// 퇴장한 client
+								continue;
+							write(clntSd[j],wBuff,strlen(wBuff)); // 그 외 client
+						}
 						FD_CLR(i, &defaultFds);
 						close(i);
 						continue;
 					}
 					rBuff[readLen] = '\0';
+
 					char wBuff[BUFSIZ];
-					sprintf(wBuff,"Client %s: %s",userInfo[i-4],rBuff);
+					int clientNum=i-4;
+					sprintf(wBuff,"Client %s: %s",userInfo[clientNum],rBuff); // wBuff에 채팅 친 클라이언트 정보와 메시지 저장
 					printf("%s\n",wBuff);
+
 					for(int j=0;j<usercnt;j++){
-						if(i-4==j)
+						if(j==clientNum)// 현재 채팅 친 client
 							continue;
-						write(clntSd[j],wBuff,strlen(wBuff));
+						write(clntSd[j],wBuff,strlen(wBuff)); // 그 외 client에게 정보 전송
 					}
 				}
 			}
