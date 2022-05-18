@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 	int listenSd, connectSd;
 	struct sockaddr_in srvAddr, clntAddr;
 	int clntAddrLen, readLen, strLen;
-	char rBuff[BUFSIZ],wBuff[BUFSIZ];
+	char rBuff[BUFSIZ];
 	int maxFd = 0;
 	fd_set defaultFds, rFds;
 	int res, i;
@@ -88,9 +88,12 @@ int main(int argc, char** argv)
 					}
 					rBuff[readLen] = '\0';
 					printf("%d %s : %s\n",i,userInfo[i-4],rBuff);
-					sprintf(rBuff,"%s: %s",userInfo[i-4],rBuff);
+					char wBuff[BUFSIZ];
+					sprintf(wBuff,"Client %s: %s",userInfo[i-4],rBuff);
 					for(int j=0;j<usercnt;j++){
-						write(clntSd[j],rBuff,strlen(rBuff));
+						if(i-4==j)
+							continue;
+						write(clntSd[j],wBuff,strlen(wBuff));
 					}
 				}
 			}
