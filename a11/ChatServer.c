@@ -69,7 +69,7 @@ int main(int argc, char** argv)
                     printf("Client (%s:%d) 님이 들어왔습니다.\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
 					//
                     clntSd[usercnt]=connectSd;
-					sprintf(userInfo[usercnt],"%s:%d",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
+					sprintf(clientInfo[usercnt],"%s:%d",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
 					usercnt++;
 					//connect한 client 정보 저장
                     write(connectSd, "Hello!", sizeof("Hello!"));
@@ -77,9 +77,9 @@ int main(int argc, char** argv)
 					
 					char wBuff[BUFSIZ];
 						
-					sprintf(wBuff, "Client (%s) 님이 들어왔습니다.\n",userInfo[usercnt-1]); // wBuff에 입장한 클라이언트 정보 저장
+					sprintf(wBuff, "Client (%s) 님이 들어왔습니다.\n",clientInfo[usercnt-1]); // wBuff에 입장한 클라이언트 정보 저장
 					printf("%s\n",wBuff);
-					printf("Client (%s) 님이 들어왔습니다.\n",userInfo[usercnt-1]); //입장할 시 메시지
+					printf("Client (%s) 님이 들어왔습니다.\n",clientInfo[usercnt-1]); //입장할 시 메시지
 
 					for(int j=0;j<usercnt-1;j++){// 현재 입장한 client 제외
 						write(clntSd[j],wBuff,strlen(wBuff)); 
@@ -98,9 +98,9 @@ int main(int argc, char** argv)
 					{
 						char wBuff[BUFSIZ];
 						
-						sprintf(wBuff, "Client (%s) 님이 나갔습니다.\n",userInfo[clientNum]); // wBuff에 퇴장한 클라이언트 정보 저장
+						sprintf(wBuff, "Client (%s) 님이 나갔습니다.\n",clientInfo[clientNum]); // wBuff에 퇴장한 클라이언트 정보 저장
 						printf("%s\n",wBuff);
-						printf("Client (%s) 님이 나갔습니다.\n",userInfo[clientNum]); //퇴장할 시 메시지
+						printf("Client (%s) 님이 나갔습니다.\n",clientInfo[clientNum]); //퇴장할 시 메시지
 
 						for(int j=0;j<usercnt;j++){
 							if(j==clientNum)// 퇴장한 client
@@ -114,7 +114,7 @@ int main(int argc, char** argv)
 					rBuff[readLen] = '\0';
 
 					char wBuff[BUFSIZ];
-					sprintf(wBuff,"Client %s: %s",userInfo[clientNum],rBuff); // wBuff에 채팅 친 클라이언트 정보와 메시지 저장
+					sprintf(wBuff,"Client %s: %s",clientInfo[clientNum],rBuff); // wBuff에 채팅 친 클라이언트 정보와 메시지 저장
 					printf("%s\n",wBuff);
 
 					for(int j=0;j<usercnt;j++){
