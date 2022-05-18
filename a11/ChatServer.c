@@ -13,7 +13,7 @@
 int main(int argc, char** argv)
 {
 	int listenSd, connectSd;
-	struct sockaddr_in srvAddr, clntAddr;
+	struct sockaddr_in srvAddr, clntAddr,clntInfo[Max_USER];;
 	int clntAddrLen, readLen, strLen;
 	char rBuff[BUFSIZ];
 	int maxFd = 0;
@@ -68,6 +68,7 @@ int main(int argc, char** argv)
   					printf("Client Port : %d\n", ntohs(clntAddr.sin_port)); 
 
                     clntSd[i]=connectSd;
+					clntInfo[i]=clntAddr;
                     write(clntSd[i], "Welcome :)", sizeof("Welcome :)"));
 					FD_SET(connectSd, &defaultFds);
 					if(maxFd < connectSd){
@@ -85,7 +86,7 @@ int main(int argc, char** argv)
 						continue;
 					}
 					rBuff[readLen] = '\0';
-					printf("Client(%d): %s\n",i-3,rBuff);
+					printf("Client(%s:%d): %s\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port),rBuff);
 				}
 			}
 		}
