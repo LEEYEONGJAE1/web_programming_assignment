@@ -46,7 +46,6 @@ int main(int argc, char** argv)
   while(1)
   {
     rFds=defaultFds;     
-    select(serverSd+1,&rFds, 0, 0, 0);
     
     if((res = select(serverSd+1, &rFds, 0, 0, NULL)) == -1) break;
 
