@@ -12,60 +12,74 @@
 void err_proc();
 int main(int argc, char** argv)
 {
-	int clntSd;
-	struct sockaddr_in clntAddr;
-	int clntAddrLen, readLen, recvByte, maxBuff, res;
-	char wBuff[BUFSIZ];
-	char rBuff[BUFSIZ];
+  int iFd;
+  struct sockaddr_in stAddr;
+  int iLen;
+  int iRtn;
+  char cBuf[BUF_SIZE];  
+  fd_set fdRead;
 
-	if(argc != 3) {
-		printf("Usage: %s [IP Address] [toPort]\n", argv[0]);
-	}
-	clntSd = socket(AF_INET, SOCK_STREAM, 0);
-	if(clntSd == -1) err_proc();
-	printf("==== client program =====\n");
 
-	memset(&clntAddr, 0, sizeof(clntAddr));
-	clntAddr.sin_family = AF_INET;
-	clntAddr.sin_addr.s_addr = inet_addr(argv[1]);
-	clntAddr.sin_port = htons(atoi(argv[2]));
+  /*** socket ***/
+  iFd = socket(AF_INET, SOCK_STREAM, 0);
+  if(-1 == iFd)
+  {
+    perror("socket:");
+    return 100;
+  }
 
-	if(connect(clntSd, (struct sockaddr *) &clntAddr,
-			    sizeof(clntAddr)) == -1)
-	{
-		close(clntSd);
-		err_proc();	
-	}
+  /*** structure setting ***/
+  stAddr.sin_family = AF_INET;
+  stAddr.sin_addr.s_addr = inet_addr(argv[1]);
+  stAddr.sin_port = htons(atoi(argv[2]));
 
-	int inputSd=0;
-	fd_set fd;
-    FD_ZERO(&fd);  
-    FD_SET(0, &fd);
-	FD_SET(clntSd, &fd); 
-	maxBuff = BUFSIZ-1;
-	while(1)
-  	{
-		     
-		if((res = select(clntSd + 1, &fd, 0, 0, NULL)) == -1) break;
+  iLen = sizeof(struct sockaddr_in);
 
-		if(FD_ISSET(0, &fd))
-		{
-			int temp = read(0, wBuff, BUFSIZ-1);      
-			wBuff[temp] = '\0';
-			write(clntSd, wBuff, maxBuff);  
-		}
-		if(FD_ISSET(clntSd, &fd)){
-			
-			recvByte = read(clntSd,rBuff,maxBuff);
-			rBuff[recvByte] = '\0';
-			printf("Server: %s\n", rBuff);
-		}
-	}
+  /*** connect ***/
+  iRtn = connect(iFd, (struct sockaddr *)&stAddr, iLen);
+  if(-1 == iRtn)
+  {
+    perror("connect:");
+    close(iFd);
+    return 200;
+  }
 
-	printf("END ^^\n");
-	close(clntSd);
+  while(1)
+  {
+    FD_ZERO(&fdRead);  
+    FD_SET(0, &fdRead);
+    FD_SET(iFd, &fdRead);      
+    select(iFd+1,&fdRead, 0, 0, 0);
 
-	return 0;
+    if(0 == (FD_ISSET(0, &fdRead) ) )
+    {
+      memset(cBuf, 0, MSG_SIZE);
+      iRtn = read(0, cBuf, MSG_SIZE);      
+      cBuf[iRtn - 1] = 0;
+      write(iFd, cBuf, MSG_SIZE);
+      printf("[Send MSG]: [%s]\n", cBuf);    
+    }
+    if(0 == (FD_ISSET(iFd, &fdRead) ))
+    {
+      memset(cBuf, 0, MSG_SIZE);
+      iRtn = read(iFd, cBuf, MSG_SIZE);      
+      printf("[Server]: [%s]\n", cBuf);    
+    }
+    if(0 == strncmp(cBuf, MSG_END, strlen(MSG_END)))
+    {
+      break;
+    }    
+  }
+
+  
+
+  /*** read & write ***/
+  //memset(cBuf, 0, BUF_SIZE);
+  //iRtn = read(0, cBuf, BUF_SIZE);
+  
+
+  close(iFd);
+  return 0;
 }
 
 void err_proc()
