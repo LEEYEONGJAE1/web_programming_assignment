@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     {
       memset(cBuf, 0, BUFSIZ-1);
       iRtn = read(iFd, cBuf, BUFSIZ-1);      
-      printf("[Server]: [%s]\n", cBuf);    
+      printf("%s\n", cBuf);    
     }
   }
 

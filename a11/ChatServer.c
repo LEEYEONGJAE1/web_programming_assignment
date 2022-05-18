@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 	int listenSd, connectSd;
 	struct sockaddr_in srvAddr, clntAddr,clntInfo[MAX_USER];;
 	int clntAddrLen, readLen, strLen;
-	char rBuff[BUFSIZ];
+	char rBuff[BUFSIZ],wBuff[BUFSIZ];
 	int maxFd = 0;
 	fd_set defaultFds, rFds;
 	int res, i;
@@ -68,12 +68,11 @@ int main(int argc, char** argv)
 
                     clntSd[usercnt]=connectSd;
 					clntInfo[usercnt++]=clntAddr;
-                    write(connectSd, "Welcome :)", sizeof("Welcome :)"));
+                    write(connectSd, "Hello!", sizeof("Hello!"));
 					FD_SET(connectSd, &defaultFds);
 					if(maxFd < connectSd){
 						maxFd = connectSd;							
                     }
-					printf("maxfd:%d",maxFd);
 				}
 				else // IO
 				{
@@ -87,8 +86,10 @@ int main(int argc, char** argv)
 					}
 					rBuff[readLen] = '\0';
 					printf("Client (%s:%d): %s\n",inet_ntoa(clntInfo[i].sin_addr),ntohs(clntInfo[i].sin_port),rBuff);
+					sprintf(rBuff,"Client (%s:%d): %s\n",inet_ntoa(clntInfo[i].sin_addr),ntohs(clntInfo[i].sin_port),rBuff);
 					for(int j=0;j<usercnt;j++){
 						write(clntSd[j],rBuff,strlen(rBuff));
+						printf("%s:%d\n",inet_ntoa(clntInfo[i].sin_addr),ntohs(clntInfo[i].sin_port));
 					}
 				}
 			}
