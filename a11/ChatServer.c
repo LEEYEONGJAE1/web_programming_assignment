@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 	int maxFd = 0;
 	fd_set defaultFds, rFds;
 	int res, i;
-    int clntSd[MAX_USER];
+    int clntSd[MAX_USER],usercnt=0;
 	if(argc != 2)
 	{
 		printf("Usage: %s [Port Number]\n", argv[0]);
@@ -45,6 +45,7 @@ int main(int argc, char** argv)
 	maxFd = listenSd;
 
 	clntAddrLen = sizeof(clntAddr);
+	
 	while(1)
 	{
 		rFds = defaultFds;
@@ -65,14 +66,14 @@ int main(int argc, char** argv)
 					}
                     printf("Client (%s:%d) 님이 들어왔습니다.\n",inet_ntoa(clntAddr.sin_addr),ntohs(clntAddr.sin_port));
 
-                    clntSd[i]=connectSd;
-					clntInfo[i]=clntAddr;
-					printf("connectSd: %d",connectSd);
+                    clntSd[usercnt]=connectSd;
+					clntInfo[usercnt++]=clntAddr;
                     write(connectSd, "Welcome :)", sizeof("Welcome :)"));
 					FD_SET(connectSd, &defaultFds);
 					if(maxFd < connectSd){
 						maxFd = connectSd;							
                     }
+					printf("maxfd:%d",maxFd);
 				}
 				else // IO
 				{
@@ -86,7 +87,9 @@ int main(int argc, char** argv)
 					}
 					rBuff[readLen] = '\0';
 					printf("Client (%s:%d): %s\n",inet_ntoa(clntInfo[i].sin_addr),ntohs(clntInfo[i].sin_port),rBuff);
-					write(clntSd, rBuff, BUFSIZ-1);
+					for(int j=0;j<usercnt;j++){
+						write(clntSd[j],rBuff,strlen(rBuff));
+					}
 				}
 			}
 		}
